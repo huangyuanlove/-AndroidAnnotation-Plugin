@@ -51,7 +51,6 @@ public class ElementListPanel extends JPanel {
         }
 
 
-        setPreferredSize(new Dimension(640, 360));
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
         addInjections();
@@ -103,12 +102,10 @@ public class ElementListPanel extends JPanel {
 
         generateIdCheckBox = new JCheckBox("default @BindView(idStr = \"xxxx\"), for checked @BindView(id = R.id.xxx)");
         generateIdCheckBox.setSelected(false);
-        generateIdCheckBox.setForeground(JBColor.RED);
         add(generateIdCheckBox, BorderLayout.PAGE_END);
 
         selectAllBindViewJCheckBox = new JCheckBox("Select all BindView");
         selectAllBindViewJCheckBox.setSelected(true);
-        selectAllBindViewJCheckBox.setForeground(JBColor.ORANGE);
         selectAllBindViewJCheckBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -120,7 +117,6 @@ public class ElementListPanel extends JPanel {
         add(selectAllBindViewJCheckBox, BorderLayout.PAGE_END);
 
         selectAllClickResponderJCheckBox = new JCheckBox("Select all ClickResponder");
-        selectAllClickResponderJCheckBox.setForeground(JBColor.magenta);
         selectAllClickResponderJCheckBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {

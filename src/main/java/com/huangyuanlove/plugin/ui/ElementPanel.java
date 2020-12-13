@@ -18,10 +18,8 @@ public class ElementPanel extends JPanel {
     protected OnCheckBoxStateChangedListener mListener;
     // ui
     protected JLabel elementTypeJLabel;
-    protected JLabel elementViewBindJLabel;
     protected JCheckBox viewBindJCheckBox;
-    protected JTextArea elementIDJTextArea;
-    protected JLabel elementClickJLabel;
+    protected JLabel elementIDJTextArea;
     protected JCheckBox clickResponderJCheckBox;
     protected JTextField mName;
     protected Color mNameDefaultColor;
@@ -43,34 +41,24 @@ public class ElementPanel extends JPanel {
         mParent = parent;
         mGeneratedIDs = ids;
 
-        elementViewBindJLabel = new JLabel("BindView");
-        elementViewBindJLabel.setFont(new Font(elementViewBindJLabel.getFont().getFontName(), Font.PLAIN, elementViewBindJLabel.getFont().getSize()));
-        viewBindJCheckBox = new JCheckBox();
-        viewBindJCheckBox.setPreferredSize(new Dimension(40, 26));
+        viewBindJCheckBox = new JCheckBox("BindView");
         if (!mGeneratedIDs.contains(element.getFullID())) {
             viewBindJCheckBox.setSelected(mElement.used);
         } else {
             viewBindJCheckBox.setSelected(false);
         }
-//        viewBindJCheckBox.addChangeListener(new CheckListener());
-
-        elementClickJLabel = new JLabel("ClickResponder");
-        elementClickJLabel.setFont(new Font(elementClickJLabel.getFont().getFontName(), Font.CENTER_BASELINE, elementClickJLabel.getFont().getSize()));
 
 
-        clickResponderJCheckBox = new JCheckBox();
-        clickResponderJCheckBox.setPreferredSize(new Dimension(100, 26));
+
+        clickResponderJCheckBox = new JCheckBox("ClickResponder");
 
         elementTypeJLabel = new JLabel(mElement.name);
-        elementTypeJLabel.setPreferredSize(new Dimension(100, 26));
+        elementTypeJLabel.setPreferredSize(new Dimension(150, 26));
 
-        elementIDJTextArea = new JTextArea(mElement.id);
-        elementIDJTextArea.setPreferredSize(new Dimension(100, 0));
-        elementIDJTextArea.setEditable(false);
-        elementIDJTextArea.setWrapStyleWord(true);
-        elementIDJTextArea.setLineWrap(true);
+        elementIDJTextArea = new JLabel(mElement.id);
+        elementIDJTextArea.setPreferredSize(new Dimension(150, 0));
 
-        mName = new JTextField(mElement.fieldName, 10);
+        mName = new JTextField(mElement.fieldName);
         mNameDefaultColor = mName.getBackground();
         mName.setPreferredSize(new Dimension(100, 26));
         mName.addFocusListener(new FocusListener() {
@@ -85,7 +73,7 @@ public class ElementPanel extends JPanel {
             }
         });
 
-        setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setMaximumSize(new Dimension(Short.MAX_VALUE, 54));
 
         add(Box.createRigidArea(new Dimension(10, 0)));
@@ -93,10 +81,8 @@ public class ElementPanel extends JPanel {
         add(Box.createRigidArea(new Dimension(10, 0)));
         add(elementIDJTextArea);
         add(Box.createRigidArea(new Dimension(10, 0)));
-        add(elementViewBindJLabel);
         add(viewBindJCheckBox);
         add(Box.createRigidArea(new Dimension(10, 0)));
-        add(elementClickJLabel);
         add(clickResponderJCheckBox);
         add(Box.createRigidArea(new Dimension(10, 0)));
         add(mName);
