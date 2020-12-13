@@ -1,0 +1,28 @@
+<idea-plugin>
+    <id>com.huangyuanlove.plugin.AndroidAnnotationPlugin</id>
+    <name>GenerateViewBind</name>
+    <vendor email="huangyuan@huangyuanlove.com" url="https://github.com/huangyuanlove/AndroidAnnotation-Plugin">huangyuanlove</vendor>
+
+    <description><![CDATA[
+    AndroidStudio plugin for <a href='https://github.com/huangyuanlove/AndroidAnnotation'>AndroidAnnotation</a>
+      like butterKnife with ButterKnifeZelezny
+    ]]></description>
+
+    <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.modules.java</depends>
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+        <action id="com.huangyuanlove.plugin.GenerateCodeAction" class="com.huangyuanlove.plugin.GenerateCodeAction"
+                text="GenerateAnnotation" description="Generate AndroidAnnotation code">
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="shift alt V"/>
+        </action>
+    </actions>
+</idea-plugin>

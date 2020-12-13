@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.intellij' version '0.6.5'
+}
+
+group 'com.huangyuanlove.plugin'
+version '0.8'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+// See https://github.com/JetBrains/gradle-intellij-plugin/
+intellij {
+    version '201.8743.12'
+    type 'IC'
+    plugins = ['android', 'java']
+}
+runIde {
+    // Absolute path to installed target 3.5 Android Studio to use as IDE Development Instance
+    // The "Contents" directory is macOS specific.
+//    ideDirectory '/Applications/Android Studio.app/Contents'
+    ideDirectory '/home/huangyuan/androidStudio'
+}
+patchPluginXml {
+    changeNotes """
+      AndroidStudio plugin for <a href='https://github.com/huangyuanlove/AndroidAnnotation'>AndroidAnnotation</a>
+      like butterKnife with ButterKnifeZelezny
+      """
+}
+gradle.buildFinished {
+    println "构建完成"
+    copy {
+        from 'build/distributions/'
+        into '.'
+    }
+    println "复制完成"
+}
