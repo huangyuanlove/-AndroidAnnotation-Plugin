@@ -17,16 +17,21 @@ public class ElementPanel extends JPanel {
     protected ArrayList<String> mGeneratedIDs;
     protected OnCheckBoxStateChangedListener mListener;
     // ui
-    protected JCheckBox mCheck;
-    protected JLabel mType;
-    protected JLabel mID;
-    protected JCheckBox mEvent;
+    protected JLabel elementTypeJLabel;
+    protected JLabel elementViewBindJLabel;
+    protected JCheckBox viewBindJCheckBox;
+    protected JTextArea elementIDJTextArea;
+    protected JLabel elementClickJLabel;
+    protected JCheckBox clickResponderJCheckBox;
     protected JTextField mName;
     protected Color mNameDefaultColor;
     protected JBColor mNameErrorColor = new JBColor(new Color(0xFF0000), new Color(0xFF0000));
 
-    public JCheckBox getCheck() {
-        return mCheck;
+    public JCheckBox getViewBindJCheckBox() {
+        return viewBindJCheckBox;
+    }
+    public JCheckBox getClickResponderJCheckBox(){
+        return clickResponderJCheckBox;
     }
 
     public void setListener(final OnCheckBoxStateChangedListener onStateChangedListener) {
@@ -38,23 +43,32 @@ public class ElementPanel extends JPanel {
         mParent = parent;
         mGeneratedIDs = ids;
 
-        mCheck = new JCheckBox();
-        mCheck.setPreferredSize(new Dimension(40, 26));
+        elementViewBindJLabel = new JLabel("BindView");
+        elementViewBindJLabel.setFont(new Font(elementViewBindJLabel.getFont().getFontName(), Font.PLAIN, elementViewBindJLabel.getFont().getSize()));
+        viewBindJCheckBox = new JCheckBox();
+        viewBindJCheckBox.setPreferredSize(new Dimension(40, 26));
         if (!mGeneratedIDs.contains(element.getFullID())) {
-            mCheck.setSelected(mElement.used);
+            viewBindJCheckBox.setSelected(mElement.used);
         } else {
-            mCheck.setSelected(false);
+            viewBindJCheckBox.setSelected(false);
         }
-        mCheck.addChangeListener(new CheckListener());
+//        viewBindJCheckBox.addChangeListener(new CheckListener());
 
-        mEvent = new JCheckBox();
-        mEvent.setPreferredSize(new Dimension(100, 26));
+        elementClickJLabel = new JLabel("ClickResponder");
+        elementClickJLabel.setFont(new Font(elementClickJLabel.getFont().getFontName(), Font.CENTER_BASELINE, elementClickJLabel.getFont().getSize()));
 
-        mType = new JLabel(mElement.name);
-        mType.setPreferredSize(new Dimension(100, 26));
 
-        mID = new JLabel(mElement.id);
-        mID.setPreferredSize(new Dimension(100, 26));
+        clickResponderJCheckBox = new JCheckBox();
+        clickResponderJCheckBox.setPreferredSize(new Dimension(100, 26));
+
+        elementTypeJLabel = new JLabel(mElement.name);
+        elementTypeJLabel.setPreferredSize(new Dimension(100, 26));
+
+        elementIDJTextArea = new JTextArea(mElement.id);
+        elementIDJTextArea.setPreferredSize(new Dimension(100, 0));
+        elementIDJTextArea.setEditable(false);
+        elementIDJTextArea.setWrapStyleWord(true);
+        elementIDJTextArea.setLineWrap(true);
 
         mName = new JTextField(mElement.fieldName, 10);
         mNameDefaultColor = mName.getBackground();
@@ -73,23 +87,26 @@ public class ElementPanel extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         setMaximumSize(new Dimension(Short.MAX_VALUE, 54));
-        add(mCheck);
+
         add(Box.createRigidArea(new Dimension(10, 0)));
-        add(mType);
+        add(elementTypeJLabel);
         add(Box.createRigidArea(new Dimension(10, 0)));
-        add(mID);
+        add(elementIDJTextArea);
         add(Box.createRigidArea(new Dimension(10, 0)));
-        add(mEvent);
+        add(elementViewBindJLabel);
+        add(viewBindJCheckBox);
+        add(Box.createRigidArea(new Dimension(10, 0)));
+        add(elementClickJLabel);
+        add(clickResponderJCheckBox);
         add(Box.createRigidArea(new Dimension(10, 0)));
         add(mName);
         add(Box.createHorizontalGlue());
 
-        checkState();
     }
 
     public void syncElement() {
-        mElement.used = mCheck.isSelected();
-        mElement.isClick = mEvent.isSelected();
+        mElement.used = viewBindJCheckBox.isSelected();
+        mElement.isClick = clickResponderJCheckBox.isSelected();
         mElement.fieldName = mName.getText();
 
         if (mElement.checkValidity()) {
@@ -100,29 +117,13 @@ public class ElementPanel extends JPanel {
 
     }
 
-    private void checkState() {
-        if (mCheck.isSelected()) {
-            mType.setEnabled(true);
-            mID.setEnabled(true);
-            mName.setEnabled(true);
-        } else {
-            mType.setEnabled(false);
-            mID.setEnabled(false);
-            mName.setEnabled(false);
-        }
-
-        if (mListener != null) {
-            mListener.changeState(mCheck.isSelected());
-        }
-    }
-
-    // classes
-
     public class CheckListener implements ChangeListener {
 
         @Override
         public void stateChanged(ChangeEvent event) {
-            checkState();
+            if (mListener != null) {
+                mListener.changeState(viewBindJCheckBox.isSelected());
+            }
         }
     }
 }

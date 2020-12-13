@@ -45,7 +45,7 @@ public class InjectWriter extends WriteCommandAction.Simple {
         if (Utils.getClickCount(mElements) > 0) {
             generateClick();
         }
-        NotificationUtil.showInfoNotification(mProject, String.valueOf(Utils.getInjectCount(mElements)) + " injections and " + String.valueOf(Utils.getClickCount(mElements)) + " onClick added to " + mFile.getName());
+        NotificationUtil.showInfoNotification(mProject, Utils.getInjectCount(mElements) + " BindView and " + String.valueOf(Utils.getClickCount(mElements)) + " ClickResponder added to " + mFile.getName());
 
 
         // reformat class
@@ -73,7 +73,6 @@ public class InjectWriter extends WriteCommandAction.Simple {
      * Create fields for injections inside main class
      */
     protected void generateFields() {
-        // add injections into main class
         for (ElementBean element : mElements) {
             if (!element.used) {
                 continue;
@@ -83,7 +82,7 @@ public class InjectWriter extends WriteCommandAction.Simple {
             injection.append("@BindView");
             injection.append('(');
             injection.append(element.getGenerateValue(generateId));
-            injection.append(") ");
+            injection.append(")");
             if (element.nameFull != null && element.nameFull.length() > 0) { // custom package+class
                 injection.append(element.nameFull);
             } else if (Constant.paths.containsKey(element.name)) { // listed class

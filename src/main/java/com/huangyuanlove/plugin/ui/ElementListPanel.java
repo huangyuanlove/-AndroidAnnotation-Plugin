@@ -2,11 +2,14 @@ package com.huangyuanlove.plugin.ui;
 
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBScrollPane;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 
 public class ElementListPanel extends JPanel {
@@ -16,33 +19,26 @@ public class ElementListPanel extends JPanel {
     protected ArrayList<String> mGeneratedIDs = new ArrayList<>();
     protected ArrayList<ElementPanel> mEntries = new ArrayList<>();
     protected ShowInjectDialogInterface showInjectDialogListener;
-    protected JCheckBox msplitOnclickMethodsCheck;
+    protected JCheckBox generateIdCheckBox;
+    protected JCheckBox selectAllBindViewJCheckBox;
+    protected JCheckBox selectAllClickResponderJCheckBox;
     protected JButton mConfirm;
     protected JButton mCancel;
-    protected ElementHeaderPanel mEntryHeader;
 
-    private final OnCheckBoxStateChangedListener allCheckListener = new OnCheckBoxStateChangedListener() {
+    private final OnCheckBoxStateChangedListener selectAllViewBindListener = new OnCheckBoxStateChangedListener() {
         @Override
         public void changeState(boolean checked) {
             for (final ElementPanel entry : mEntries) {
-                entry.setListener(null);
-                entry.getCheck().setSelected(checked);
-                entry.setListener(singleCheckListener);
+                entry.getViewBindJCheckBox().setSelected(checked);
             }
         }
     };
-
-    private final OnCheckBoxStateChangedListener singleCheckListener = new OnCheckBoxStateChangedListener() {
+    private final OnCheckBoxStateChangedListener selectAllClickResponderListener = new OnCheckBoxStateChangedListener() {
         @Override
         public void changeState(boolean checked) {
-            boolean result = true;
-            for (ElementPanel entry : mEntries) {
-                result &= entry.getCheck().isSelected();
+            for (final ElementPanel entry : mEntries) {
+                entry.getClickResponderJCheckBox().setSelected(checked);
             }
-
-            mEntryHeader.setAllListener(null);
-//            mEntryHeader.getAllCheck().setSelected(result);
-            mEntryHeader.setAllListener(allCheckListener);
         }
     };
 
@@ -66,8 +62,6 @@ public class ElementListPanel extends JPanel {
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.PAGE_AXIS));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        mEntryHeader = new ElementHeaderPanel();
-        contentPanel.add(mEntryHeader);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 
         JPanel injectionsPanel = new JPanel();
@@ -75,10 +69,9 @@ public class ElementListPanel extends JPanel {
         injectionsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 
         int cnt = 0;
-        boolean selectAllCheck = true;
         for (ElementBean element : mElements) {
             ElementPanel entry = new ElementPanel(this, element, mGeneratedIDs);
-            entry.setListener(singleCheckListener);
+
 
             if (cnt > 0) {
                 injectionsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -88,10 +81,7 @@ public class ElementListPanel extends JPanel {
 
             mEntries.add(entry);
 
-            selectAllCheck &= entry.getCheck().isSelected();
         }
-        mEntryHeader.getAllCheck().setSelected(selectAllCheck);
-        mEntryHeader.setAllListener(allCheckListener);
         injectionsPanel.add(Box.createVerticalGlue());
         injectionsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 
@@ -111,20 +101,35 @@ public class ElementListPanel extends JPanel {
         holderPanel.add(Box.createHorizontalGlue());
         add(holderPanel, BorderLayout.PAGE_END);
 
-        msplitOnclickMethodsCheck = new JCheckBox();
-        msplitOnclickMethodsCheck.setPreferredSize(new Dimension(32, 26));
-        msplitOnclickMethodsCheck.setSelected(false);
+        generateIdCheckBox = new JCheckBox("default @BindView(idStr = \"xxxx\"), for checked @BindView(id = R.id.xxx)");
+        generateIdCheckBox.setSelected(false);
+        generateIdCheckBox.setForeground(JBColor.RED);
+        add(generateIdCheckBox, BorderLayout.PAGE_END);
 
-        final JLabel independentOnclickMethodsLabel = new JLabel();
-        independentOnclickMethodsLabel.setText("默认生成 @BindView(idStr = \"xxxx\")，选中则生成 @BindView(id = R.id.xxx)");
+        selectAllBindViewJCheckBox = new JCheckBox("Select all BindView");
+        selectAllBindViewJCheckBox.setSelected(true);
+        selectAllBindViewJCheckBox.setForeground(JBColor.ORANGE);
+        selectAllBindViewJCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(selectAllViewBindListener !=null){
+                    selectAllViewBindListener.changeState(e.getStateChange() == ItemEvent.SELECTED);
+                }
+            }
+        });
+        add(selectAllBindViewJCheckBox, BorderLayout.PAGE_END);
 
-        final JPanel splitOnclickMethodsPanel = new JPanel();
-        splitOnclickMethodsPanel.setLayout(new BoxLayout(splitOnclickMethodsPanel, BoxLayout.LINE_AXIS));
-        splitOnclickMethodsPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-        splitOnclickMethodsPanel.add(msplitOnclickMethodsCheck);
-        splitOnclickMethodsPanel.add(independentOnclickMethodsLabel);
-        splitOnclickMethodsPanel.add(Box.createHorizontalGlue());
-        add(splitOnclickMethodsPanel, BorderLayout.PAGE_END);
+        selectAllClickResponderJCheckBox = new JCheckBox("Select all ClickResponder");
+        selectAllClickResponderJCheckBox.setForeground(JBColor.magenta);
+        selectAllClickResponderJCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(selectAllClickResponderListener!=null){
+                    selectAllClickResponderListener.changeState(e.getStateChange() == ItemEvent.SELECTED);
+                }
+            }
+        });
+        add(selectAllClickResponderJCheckBox, BorderLayout.PAGE_END);
 
         mCancel = new JButton();
         mCancel.setAction(new CancelAction());
@@ -173,8 +178,6 @@ public class ElementListPanel extends JPanel {
     public JButton getConfirmButton() {
         return mConfirm;
     }
-    // classes
-
 
     protected class ConfirmAction extends AbstractAction {
 
@@ -187,7 +190,7 @@ public class ElementListPanel extends JPanel {
 
             if (valid) {
                 if (showInjectDialogListener != null) {
-                    showInjectDialogListener.onConfirm(mProject, mEditor, mElements, msplitOnclickMethodsCheck.isSelected());
+                    showInjectDialogListener.onConfirm(mProject, mEditor, mElements, generateIdCheckBox.isSelected());
                 }
             }
         }

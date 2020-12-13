@@ -16,7 +16,6 @@ public class ElementBean {
     public boolean isClick = true;
 
     public ElementBean(String name, String id) {
-        // id
         final Matcher matcher = sIdPattern.matcher(id);
         if (matcher.find() && matcher.groupCount() > 0) {
             this.id = matcher.group(2);
@@ -36,6 +35,7 @@ public class ElementBean {
         }
 
         this.fieldName = getFieldName();
+
     }
 
     public String getFullID() {
