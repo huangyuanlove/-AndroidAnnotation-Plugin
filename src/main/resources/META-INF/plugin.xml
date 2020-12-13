@@ -20,7 +20,7 @@
     <actions>
         <!-- Add your actions here -->
         <action id="com.huangyuanlove.plugin.GenerateCodeAction" class="com.huangyuanlove.plugin.GenerateCodeAction"
-                text="GenerateAnnotation" description="Generate AndroidAnnotation code">
+                text="GenerateViewBind" description="Generate AndroidAnnotation code">
             <add-to-group group-id="GenerateGroup" anchor="last"/>
             <keyboard-shortcut keymap="$default" first-keystroke="shift alt V"/>
         </action>
